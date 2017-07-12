@@ -42,6 +42,7 @@ void TIM3_IRQHandler(void)//左右轮与实际相反
 				R_Sum_Step += ((float)Speed_R_Get/1438.85);
 			
 				Sum_Step = R_Sum_Step + L_Sum_Step;
+		/* 目前位置计算在上位机上，所以注释
 		if(num==5)//5ms
 		{
 			num=0;
@@ -49,6 +50,7 @@ void TIM3_IRQHandler(void)//左右轮与实际相反
 			Robot_Loaction((Speed_L_Get+Speed_R_Get)/2.0/1433.8, (Speed_R_Get-Speed_L_Get)/38.0/1433.8);
 			
 		}
+		*/
 		
 //			if(num==5)//5ms
 //			{
