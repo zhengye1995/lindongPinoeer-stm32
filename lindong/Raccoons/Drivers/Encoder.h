@@ -1,3 +1,20 @@
+
+/********************************************************************************************************
+**                                 Copyright (c)   lindong EE
+**                                                 All Rights Reserved
+**  
+**                                 Email:18813124313@qq.com   weixin:18813124313
+**-------------------------------------------------------------------------------------------------------
+**  MCU        : STM32F103RE (STMicroelectronics)
+**  Compiler   : Keil uVision 5.16a
+**  Module Name: Encoder.h
+**  Module Date: 2017-07-13
+**  Module Auth: zhengye
+**  Description: 
+**  Version    : V1.0
+**  Notes      : 
+**-------------------------------------------------------------------------------------------------------*/
+
 #ifndef __ENCODER_H__
 #define __ENCODER_H__
 
@@ -32,28 +49,15 @@ typedef struct Robot_Location			//定义数法核心数据
 	 float y;
 }Robot_Location;
 /* External Function */
-void EncoderIOInit(void);
-void EncoderTIMInit(void);
-void EncoderInit(void);
-void GetSpeed(void);
-SINT32 GetSpeedL(void);
-SINT32 GetSpeedR(void);
-//void GetSpeedL(void)；
-//void GetSpeedR(void);
 
 extern s32 Speed_L_Get;
 extern s32 Speed_R_Get;
-extern s32 Speed_L_Get_NEW;
-extern s32 Speed_R_Get_NEW;
-extern s32 Last_Speed_L_Get;
-extern s32 Last_Speed_R_Get;
 extern double R_Sum_Step;
 extern double L_Sum_Step;
 extern double Sum_Step;
-extern int motorflag;
-extern SINT32 GetEncoder1_Pulse(TIM_TypeDef *TIMx);
-extern SINT32 GetEncoder2_Pulse(TIM_TypeDef *TIMx);
-extern SINT32 Robot_Loaction(float speed, float Angular_velocity);
+extern SINT32 GetEncoder1_Pulse(void);
+extern SINT32 GetEncoder2_Pulse(void);
+extern void Robot_Loaction(float speed, float Angular_velocity);
 extern Robot_Location rl;
 #endif
 

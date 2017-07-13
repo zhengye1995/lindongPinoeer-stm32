@@ -1,24 +1,19 @@
 /********************************************************************************************************
-**                                 Copyright (c)          MEI14
+**                                 Copyright (c)   lindong EE
 **                                                 All Rights Reserved
 **  
-**                                 Email:729527658@qq.com   QQ:729527658
+**                                 Email:18813124313@qq.com   weixin:18813124313
 **-------------------------------------------------------------------------------------------------------
-**  MCU        : STM32F407VG (STMicroelectronics)
-**  Compiler   : Keil uVision 5.10
-**  Module Name: 
-**  Module Date: 2014-
-**  Module Auth: 
+**  MCU        : STM32F103RE (STMicroelectronics)
+**  Compiler   : Keil uVision 5.16a
+**  Module Name: Motor.c
+**  Module Date: 2017-07-13
+**  Module Auth: zhengye
 **  Description: 
 **  Version    : V1.0
 **  Notes      : 
-**-------------------------------------------------------------------------------------------------------
-**  Version    : 
-**  Modified By: 
-**  Date       : 
-**  Content    : 
-**  Notes      : 
-********************************************************************************************************/
+**-------------------------------------------------------------------------------------------------------*/
+
 #ifndef _FUNCTION_H
 #define _FUNCTION_H
 
@@ -37,7 +32,7 @@
 /* External Function */
 void   fun_usartSend(USART_TypeDef *com ,u8 data);
 u8     fun_usartRec(USART_TypeDef *com);
-void fun_nvicSetNormal(u8 chanel, u8 mPrio, u8 subPrio);
+void   fun_nvicSetNormal(u8 chanel, u8 mPrio, u8 subPrio);
 
 #endif
 //===========================================  End Of File  ===========================================//

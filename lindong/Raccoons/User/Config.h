@@ -1,3 +1,18 @@
+/********************************************************************************************************
+**                                 Copyright (c)   lindong EE
+**                                                 All Rights Reserved
+**  
+**                                 Email:18813124313@qq.com   weixin:18813124313
+**-------------------------------------------------------------------------------------------------------
+**  MCU        : STM32F103RE (STMicroelectronics)
+**  Compiler   : Keil uVision 5.16a
+**  Module Name: Config.h
+**  Module Date: 2017-07-13
+**  Module Auth: zhengye
+**  Description: 
+**  Version    : V1.0
+**  Notes      : 
+**-------------------------------------------------------------------------------------------------------*/
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
@@ -81,7 +96,6 @@ typedef struct			//定义数法核心数据
 
     SINT32 vi_PreError;	  	//速度PID，前一次，速度误差,,vi_Ref - vi_FeedBack
     SINT32 vi_PreDerror;	//速度PID，前一次，速度误差之差，d_error-PreDerror;
-    //SINT32 vi_SUMDerror;
 		SINT32 PreI;    //之前的I值
 	
     SINT32 v_Kp;		//速度PID，Ka = Kp
@@ -91,5 +105,13 @@ typedef struct			//定义数法核心数据
     SINT32 vl_PreU;  //控制输出
     SINT32 motor_PreU;
 }PID;
+typedef struct
+{
+	unsigned char flag_mag_cali;
+	unsigned char flag_send_mag;
+	short speed;
+	short direction;
+	int soft_watchdog;
+}sys_status_t;
 //===========================================  End Of File  ===========================================//
 

@@ -24,16 +24,8 @@
 .\output\usart.o: ..\User\main.h
 .\output\usart.o: ..\Drivers\Bsp.h
 .\output\usart.o: ..\Drivers\Encoder.h
-.\output\usart.o: ..\Drivers\IOinput.h
-.\output\usart.o: ..\Drivers\IOoutput.h
 .\output\usart.o: ..\Drivers\Motor.h
-.\output\usart.o: ..\Drivers\Sensor.h
-.\output\usart.o: ..\Drivers\Servo.h
-.\output\usart.o: ..\Drivers\Usart.h
-.\output\usart.o: ..\Drivers\Pid.h
-.\output\usart.o: ..\Drivers\Tim.h
+.\output\usart.o: ..\Drivers\pid.h
 .\output\usart.o: ..\Drivers\mpu9250.h
 .\output\usart.o: ..\User\systick.h
-.\output\usart.o: ..\User\schedule.h
-.\output\usart.o: ..\User\datatrans.h
 .\output\usart.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h

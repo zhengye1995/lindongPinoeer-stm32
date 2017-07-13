@@ -187,7 +187,28 @@ void mpu_data_prepare(void)
 	magFilterCnt ++;
 	
 }
+#define USART4_BUF_NUM 64
+unsigned char USART4_TX_BUF[USART4_BUF_NUM] = {0};
+sys_status_t local_data;
+void DT_SetMagData(void)
+{
+	unsigned char sum = 0;
+	unsigned char i;
 
+
+	USART4_TX_BUF[0] = 0xFA;
+	USART4_TX_BUF[1] = 0xAF;
+	USART4_TX_BUF[2] = 0x03;
+	USART4_TX_BUF[3] = 0x72;	
+	USART4_TX_BUF[5] = (unsigned char)(((int)Angle[2] & 0x0000FF00) >> 8);
+	USART4_TX_BUF[4] = (unsigned char)((int)Angle[2] & 0x000000FF);
+	for(i = 2; i < 6; i++)
+	{
+			sum += USART4_TX_BUF[i];
+	}	
+	USART4_TX_BUF[6] = sum;
+	local_data.flag_send_mag = 1;
+}
 void sensor_process(void)
 {
 	if(flag_cali_mag != 1)

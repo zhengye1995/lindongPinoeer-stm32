@@ -24,15 +24,7 @@
 .\output\schedule.o: ..\User\main.h
 .\output\schedule.o: ..\Drivers\Bsp.h
 .\output\schedule.o: ..\Drivers\Encoder.h
-.\output\schedule.o: ..\Drivers\IOinput.h
-.\output\schedule.o: ..\Drivers\IOoutput.h
 .\output\schedule.o: ..\Drivers\Motor.h
-.\output\schedule.o: ..\Drivers\Sensor.h
-.\output\schedule.o: ..\Drivers\Servo.h
-.\output\schedule.o: ..\Drivers\Usart.h
 .\output\schedule.o: ..\Drivers\Pid.h
-.\output\schedule.o: ..\Drivers\Tim.h
 .\output\schedule.o: ..\Drivers\mpu9250.h
 .\output\schedule.o: ..\User\systick.h
-.\output\schedule.o: ..\User\schedule.h
-.\output\schedule.o: ..\User\datatrans.h

@@ -1,3 +1,19 @@
+/********************************************************************************************************
+**                                 Copyright (c)   lindong EE
+**                                                 All Rights Reserved
+**  
+**                                 Email:18813124313@qq.com   weixin:18813124313
+**-------------------------------------------------------------------------------------------------------
+**  MCU        : STM32F103RE (STMicroelectronics)
+**  Compiler   : Keil uVision 5.16a
+**  Module Name: Motor.c
+**  Module Date: 2017-07-13
+**  Module Auth: zhengye
+**  Description: 
+**  Version    : V1.0
+**  Notes      : 
+**-------------------------------------------------------------------------------------------------------*/
+
 #ifndef __MOTOR_H__
 #define __MOTOR_H__
 
@@ -34,11 +50,11 @@
 
 
 /* External Function */
-void MotorIOInit(void);
-void MotorTIMInit(void);
-void MotorInit(void);
 void SetMotor1PWM(s16 xpwm);
 void SetMotor2PWM(s16 xpwm);
+void Motor_CtrlLR(s32 RefL,s32 RefR);
+void Motor_CtrlLR2(s32 RefL,s32 RefR);
+void SpeedSeed(u8 speedLsend, u8 speedRsend);
 #endif
 
 //===========================================  End Of File  ===========================================//

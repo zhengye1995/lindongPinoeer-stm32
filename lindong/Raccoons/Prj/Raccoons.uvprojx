@@ -455,29 +455,9 @@
           <GroupName>Drivers</GroupName>
           <Files>
             <File>
-              <FileName>dataflash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\dataflash.c</FilePath>
-            </File>
-            <File>
-              <FileName>Delay.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\Delay.c</FilePath>
-            </File>
-            <File>
               <FileName>Encoder.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Drivers\Encoder.c</FilePath>
-            </File>
-            <File>
-              <FileName>IOinput.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\IOinput.c</FilePath>
-            </File>
-            <File>
-              <FileName>IOoutput.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\IOoutput.c</FilePath>
             </File>
             <File>
               <FileName>Motor.c</FileName>
@@ -493,31 +473,6 @@
               <FileName>Pid.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Drivers\Pid.c</FilePath>
-            </File>
-            <File>
-              <FileName>Sensor.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\Sensor.c</FilePath>
-            </File>
-            <File>
-              <FileName>Servo.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\Servo.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_it.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\stm32f10x_it.c</FilePath>
-            </File>
-            <File>
-              <FileName>Tim.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\Tim.c</FilePath>
-            </File>
-            <File>
-              <FileName>Usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\Usart.c</FilePath>
             </File>
             <File>
               <FileName>Bsp.c</FileName>
@@ -605,24 +560,9 @@
           <GroupName>User</GroupName>
           <Files>
             <File>
-              <FileName>datatrans.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\User\datatrans.c</FilePath>
-            </File>
-            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\main.c</FilePath>
-            </File>
-            <File>
-              <FileName>schedule.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\User\schedule.c</FilePath>
-            </File>
-            <File>
-              <FileName>systick.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\User\systick.c</FilePath>
             </File>
             <File>
               <FileName>Global.h</FileName>
@@ -633,6 +573,11 @@
               <FileName>Config.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\User\Config.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\stm32f10x_it.c</FilePath>
             </File>
           </Files>
         </Group>

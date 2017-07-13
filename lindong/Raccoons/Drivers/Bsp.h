@@ -1,14 +1,14 @@
 /********************************************************************************************************
-**                                 Copyright (c)   2014嵌入式比赛
+**                                 Copyright (c)   lindong EE
 **                                                 All Rights Reserved
 **  
-**                                 Email:729527658@qq.com   QQ:729527658
+**                                 Email:18813124313@163.com   weixin:18813124313
 **-------------------------------------------------------------------------------------------------------
 **  MCU        : STM32F429IG (STMicroelectronics)
-**  Compiler   : Keil uVision 5.10
+**  Compiler   : Keil uVision 5.16a
 **  Module Name: Board Support Package
-**  Module Date: 2014-03-14
-**  Module Auth: xiaobo
+**  Module Date: 2017-06-26
+**  Module Auth: zhengye
 **  Description: 
 **  Version    : V1.0
 **  Notes      : 
@@ -120,5 +120,7 @@ static void Bsp_adcInit(void);
 void BSP_init(void);
 void Delay_us(u32 us);
 void Delay_ms(u32 ms);
+void Systick_Init(void);
+void Code_receive_speed(void);
 #endif
 //===========================================  End Of File  ===========================================//

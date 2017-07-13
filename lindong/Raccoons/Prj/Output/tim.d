@@ -23,15 +23,7 @@
 .\output\tim.o: ..\User\main.h
 .\output\tim.o: ..\Drivers\Bsp.h
 .\output\tim.o: ..\Drivers\Encoder.h
-.\output\tim.o: ..\Drivers\IOinput.h
-.\output\tim.o: ..\Drivers\IOoutput.h
 .\output\tim.o: ..\Drivers\Motor.h
-.\output\tim.o: ..\Drivers\Sensor.h
-.\output\tim.o: ..\Drivers\Servo.h
-.\output\tim.o: ..\Drivers\Usart.h
-.\output\tim.o: ..\Drivers\Pid.h
-.\output\tim.o: ..\Drivers\Tim.h
+.\output\tim.o: ..\Drivers\pid.h
 .\output\tim.o: ..\Drivers\mpu9250.h
 .\output\tim.o: ..\User\systick.h
-.\output\tim.o: ..\User\schedule.h
-.\output\tim.o: ..\User\datatrans.h

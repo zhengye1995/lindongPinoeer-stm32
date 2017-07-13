@@ -15,15 +15,10 @@
 
 /* Internal Function */
 
-void Motor_CtrlLR(s32 RefL,s32 RefR);
-void Motor_CtrlLR2(s32 RefL,s32 RefR);
-
 /* External Function */
 extern s16 recvSpeed;
 extern s16 recvAngle;
-extern unsigned char UART4rec[9];
 extern int UART4_RecvFin;
-extern void SpeedSeed(void);
 extern unsigned char UART4recdma[9];
 #endif
 

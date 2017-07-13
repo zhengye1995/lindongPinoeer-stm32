@@ -44,6 +44,7 @@ Revision     :
 ********************************************************************************************************/
 void BSP_init(void)
 {
+	  Systick_Init();
     BSP_GPIOinit();
     BSP_usartInit();
     BSP_timerInit();
@@ -100,15 +101,15 @@ static void BSP_GPIOinit(void)
 		
 		//UART4从芯片上直接飞线引出，没有硬件滤波（唯一引出的串口，与上位机通信，切勿供电）
 		//PC10 UART4 TX 
-    GPIO_InitStructure.GPIO_Pin = UART_TX_PIN;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(UART_GPIO, &GPIO_InitStructure);
+    GPIO_Init(GPIOC, &GPIO_InitStructure);
 
     //PC11 UART4 RX
-    GPIO_InitStructure.GPIO_Pin = UART_RX_PIN;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-    GPIO_Init(UART_GPIO, &GPIO_InitStructure);
+    GPIO_Init(GPIOC, &GPIO_InitStructure);
 }
 /********************************************************************************************************
 Function Name: BSP_usart
@@ -192,7 +193,7 @@ static void BSP_timerInit(void)
   //数据类型定义
   TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;//基本定时对象
   TIM_ICInitTypeDef TIM_ICInitStructure;//输入捕获对象
-	TIM_OCInitTypeDef TIM_OCInitStructure; 
+	//TIM_OCInitTypeDef TIM_OCInitStructure; 
   
   //TIM3  用于10MS中断定时
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
@@ -378,7 +379,16 @@ static void Bsp_adcInit(void)
 */
 
 }
-
+/********************************************************************************************************
+Function Name: delay_init
+Author       : zhengye
+Date         : 2017-06-26
+Description  : 
+Inputs       : None
+Outputs      : None
+Notes        : 
+Revision     : 
+********************************************************************************************************/
 void delay_init(void)
 {
 	if (SysTick_Config(SystemCoreClock / 1000000))
@@ -387,6 +397,16 @@ void delay_init(void)
     while (1);
   }
 }
+/********************************************************************************************************
+Function Name: Delay_us
+Author       : zhengye
+Date         : 2017-06-26
+Description  : 
+Inputs       : None
+Outputs      : None
+Notes        : 
+Revision     : 
+********************************************************************************************************/
 void Delay_us(u32 us)
 {
 	bspData.systime=0;
@@ -395,7 +415,16 @@ void Delay_us(u32 us)
 		;
 	}
 } 
-
+/********************************************************************************************************
+Function Name: Delay_ms
+Author       : zhengye
+Date         : 2017-06-26
+Description  : 
+Inputs       : None
+Outputs      : None
+Notes        : 
+Revision     : 
+********************************************************************************************************/
 void Delay_ms(u32 ms)
 {
 	bspData.systime=0;
@@ -404,7 +433,45 @@ void Delay_ms(u32 ms)
 		;
 	}
 } 
-
-
+/********************************************************************************************************
+Function Name: Systick_Init
+Author       : zhengye
+Date         : 2017-06-26
+Description  : 
+Inputs       : None
+Outputs      : None
+Notes        : 
+Revision     : 
+********************************************************************************************************/
+void Systick_Init(void)
+{
+  if (SysTick_Config(SystemCoreClock / 1000000))
+  { 
+    /* Capture error */ 
+    while (1);
+  }
+}
+/********************************************************************************************************
+Function Name: Code_receive_speed
+Author       : zhengye
+Date         : 2017-06-26
+Description  : 
+Inputs       : None
+Outputs      : None
+Notes        : 
+Revision     : 
+********************************************************************************************************/
+void Code_receive_speed(void)
+{
+		
+	  if((UART4recdma[0]==0xFA)&&(UART4recdma[1]==0xAF)&&(UART4recdma[2]==0x06)&&(UART4recdma[3]==0x70))
+		{
+			unsigned char recnum = UART4recdma[4] + UART4recdma[5] + UART4recdma[6] + UART4recdma[7];
+			if(recnum == UART4recdma[8])
+			{
+				UART4_RecvFin = 1;
+			}
+		}
+}
 
 //===========================================  End Of File  ===========================================//
