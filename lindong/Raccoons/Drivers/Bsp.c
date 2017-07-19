@@ -193,7 +193,7 @@ static void BSP_timerInit(void)
   //数据类型定义
   TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;//基本定时对象
   TIM_ICInitTypeDef TIM_ICInitStructure;//输入捕获对象
-	//TIM_OCInitTypeDef TIM_OCInitStructure; 
+	TIM_OCInitTypeDef TIM_OCInitStructure; 
   
   //TIM3  用于10MS中断定时
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
@@ -241,6 +241,32 @@ static void BSP_timerInit(void)
 	TIM_ICInit(TIM8, &TIM_ICInitStructure);
 	TIM_SetCounter(TIM8, 0);
 	TIM_Cmd(TIM8, ENABLE);
+	
+	/********************** Motor PWM *************************/
+	 RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+
+    TIM_DeInit(MOTOR_TIM);
+    TIM_TimeBaseStructure.TIM_Prescaler = 4;                               // 系统  72MHz    TIM时钟= 72MHz/5=14400000
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+    TIM_TimeBaseStructure.TIM_Period = MOTOR_Period;                         // Frequency = 14400000 / 2000=7200
+    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+
+    TIM_TimeBaseInit(MOTOR_TIM, &TIM_TimeBaseStructure);
+
+    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM2;
+    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+
+    TIM_OCInitStructure.TIM_Pulse = MOTOR_Period >> 1;                       // TIM2 dutycycle = 50%
+    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_Low;
+
+    TIM_OC1Init(MOTOR_TIM, &TIM_OCInitStructure);
+    TIM_OC1PreloadConfig(MOTOR_TIM, TIM_OCPreload_Enable);
+
+    TIM_OC3Init(MOTOR_TIM, &TIM_OCInitStructure);
+    TIM_OC3PreloadConfig(MOTOR_TIM, TIM_OCPreload_Enable);
+
+    TIM_ARRPreloadConfig(MOTOR_TIM,ENABLE);
+    TIM_Cmd(MOTOR_TIM, ENABLE);
 }
 
 /********************************************************************************************************

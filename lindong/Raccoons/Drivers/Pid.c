@@ -29,7 +29,7 @@ Function Name: V_PIDInit
 Description  : PID初始化
 Inputs       : None
 Outputs      : None
-Notes        : PID初始化
+Notes        : PID初始化，室外与室内地面摩擦力不同，PID参数不同 室内参数：3 1 0 室外参数：
 Revision     :
 ********************************************************************************************************/
 void V_PIDInit (void)
@@ -40,8 +40,14 @@ void V_PIDInit (void)
 		right.v_Kp = 3;
 		right.v_Ki = 1;
 		right.v_Kd = 0;
-		V_PIDreset(&left);
-		V_PIDreset(&right);
+//			left.v_Kp = 6;
+//			left.v_Ki = 1;
+//			left.v_Kd = 0;
+//			right.v_Kp = 6;
+//			right.v_Ki = 1;
+//			right.v_Kd = 0;
+			V_PIDreset(&left);
+			V_PIDreset(&right);
 }
 	
 /********************************************************************************************************
