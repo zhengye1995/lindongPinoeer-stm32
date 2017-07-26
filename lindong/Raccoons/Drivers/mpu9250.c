@@ -1,569 +1,269 @@
 #include "mpu9250.h"
-//#include "Global.h"
-//#include "timer.h"
-//#include "sensorprocess.h"
+#include "mpuiic.h"
+//#include "delay.h"
+//////////////////////////////////////////////////////////////////////////////////	 
+//本程序只供学习使用，未经作者许可，不得用于其它任何用途
+//ALIENTEK STM32F746开发板
+//MPU9250驱动代码	   
+//正点原子@ALIENTEK
+//技术论坛:www.openedv.com
+//创建日期:2015/12/30
+//版本：V1.0
+//版权所有，盗版必究。
+//Copyright(C) 广州市星翼电子科技有限公司 2014-2024
+//All rights reserved									  
+////////////////////////////////////////////////////////////////////////////////// 	
 
-unsigned char MPU_DAT_BUF[14];
-MPU_DATA mpu_data_orign;
-
-int flag_cali_mag = 0;
-unsigned char AK8975_ADDR = 0x18;
-
-unsigned char ak87 = 0;
-
-
-#define magFilterNum 8
-float mag_raw_data[3];
-float magData[3];
-float mag_param[3][2];
-
-#define MAG_ADJ_MAX 3000
-
-int magCaliNum = 0;
-float magMax[3] = {-1000000,-1000000,-1000000};
-float magMin[3] = {1000000,1000000,1000000};
-
-
-float Angle[3] = {0,0,0};
-
-void sensorCalibrate(void);
-
-
-
-unsigned char mpu9250_write_reg(unsigned char reg,
-                                unsigned char length,
-                                unsigned char * data)
+//初始化MPU9250
+//返回值:0,成功
+//    其他,错误代码
+u8 MPU9250_Init(void)
 {
-    return iic_write(ADDR_MPU9250, reg, length, data);
-}
-
-unsigned char mpu9250_read_reg(unsigned char reg,
-                                unsigned char length,
-                                unsigned char * dat)
-{
-    return iic_read(ADDR_MPU9250, reg, length, dat);
-}
-
-
-void init_mpu9250(void)
-{
-	unsigned char dat;
-	MPU9250_iic_init();
-	Delay_ms(100) ;
-	dat = 0x80 ;
-	iic_write(ADDR_MPU9250, PWR_MGMT_1,    1,&dat) ;
-	Delay_ms(50);
-	dat = 0x00 ;
-	iic_write(ADDR_MPU9250, PWR_MGMT_1,    1,&dat) ;
-	Delay_ms(50);
-	iic_write(ADDR_MPU9250, PWR_MGMT_1,    1,&dat) ;
-	dat = 0x07 ;
-	iic_write(ADDR_MPU9250, SMPLRT_DIV,    1,&dat) ;
-	dat = 0x86 ;
-	iic_write(ADDR_MPU9250, CONFIG,        1,&dat) ;
-	dat = 0x10 ;								// 陀螺仪量程 ±1000dps
-	iic_write(ADDR_MPU9250, GYRO_CONFIG,   1,&dat) ;
-	dat = 0x10 ;								// 加速度计量程 ±8g
-	iic_write(ADDR_MPU9250, ACCEL_CONFIG,  1,&dat) ;
-	
-	/////////////////////////////////////////////////
-	// 
-	dat = 0x00;
-	iic_write(ADDR_MPU9250, 0x6A,  1, &dat) ;	
-	dat = 0x02;
-	iic_write(ADDR_MPU9250, 0x37,  1, &dat) ;
-
-	Delay_ms(50);
-	dat = 0x00;
-	iic_write(AK8975_ADDR, 0x0A,  1, &dat) ;
-	Delay_ms(50);
-	dat = 0x01;
-	iic_write(AK8975_ADDR, 0x0A,  1, &dat) ;
-	
-	while(dat != 0x48)
-	{
-		iic_read(AK8975_ADDR, 0x00, 1, &dat);
-		Delay_ms(1);
-	}
-	
-	
-	flag_cali_mag = 0;
-	
-	mag_param[0][0] = -6;
-	mag_param[0][1] = 0.025641026;
-	
-	mag_param[1][0] = 35;
-	mag_param[1][1] = 0.166666672;
-	
-	mag_param[2][0] = -53;
-	mag_param[2][1] = 0.024390243;
-	
-	
-	
-	
-}
-
-
-
-void get_mpu9250_dat(void)
-{
-  uint8_t dat = 0;
-	mpu9250_read_reg(ACCEL_XOUT_H, 14, MPU_DAT_BUF);
-	mpu_data_orign.axc_x  = (short)((MPU_DAT_BUF[0]<<8) + MPU_DAT_BUF[1]);
-	mpu_data_orign.axc_y  = (short)((MPU_DAT_BUF[2]<<8) + MPU_DAT_BUF[3]);
-	mpu_data_orign.axc_z  = (short)((MPU_DAT_BUF[4]<<8) + MPU_DAT_BUF[5]);
-	mpu_data_orign.temp   = (short)((MPU_DAT_BUF[6]<<8) + MPU_DAT_BUF[7]);
-	
-  mpu_data_orign.gyro_x = (short)((MPU_DAT_BUF[8]  << 8) + MPU_DAT_BUF[9]  );
-	mpu_data_orign.gyro_y = (short)((MPU_DAT_BUF[10] << 8) + MPU_DAT_BUF[11] );
-	mpu_data_orign.gyro_z = (short)((MPU_DAT_BUF[12] << 8) + MPU_DAT_BUF[13] );
-	
-	//dat = 0x01;
-	//iic_write(AK8975_ADDR, 0x0A,  1, &dat) ;
-
-	
-	iic_read(AK8975_ADDR,0x03, 6, MPU_DAT_BUF);
-	
-	mpu_data_orign.mag_x = (short)((MPU_DAT_BUF[1]<<8) + MPU_DAT_BUF[0]);
-	mpu_data_orign.mag_y = (short)((MPU_DAT_BUF[3]<<8) + MPU_DAT_BUF[2]);
-	mpu_data_orign.mag_z = (short)((MPU_DAT_BUF[5]<<8) + MPU_DAT_BUF[4]);		
-	
-	dat = 0x01;
-	iic_write(AK8975_ADDR, 0x0A,  1, &dat);
-	
-	//Ang = -xbm_atan2(mpu_data_orign.mag_x,-mpu_data_orign.mag_y) * XBM_R2D;
-	//Ang = atan2(mpu_data_orign.mag_y,mpu_data_orign.mag_x )* XBM_R2D;
-}
-
-
-
-void mpu_data_prepare(void)
-{
-	static float magFilter[3][magFilterNum];
-	static float magSum[3] ;
-	static int magFilterCnt = 0;
-	static unsigned char magFilterIsFull = 0;
-	unsigned char i;
-	
-	
-	get_mpu9250_dat();
-	
-	sensorCalibrate();
-	
-	mag_raw_data[0] = (mpu_data_orign.mag_x - mag_param[0][0]) * mag_param[0][1];
-	mag_raw_data[1] = (mpu_data_orign.mag_y - mag_param[1][0]) * mag_param[1][1];
-	mag_raw_data[2] = (mpu_data_orign.mag_z - mag_param[2][0]) * mag_param[2][1];
-	
-	
-	
-	
-	if(magFilterCnt >= magFilterNum)
-	{
-		magFilterCnt = 0;
-		magFilterIsFull = 1;
-	}
-	if(magFilterIsFull)
-	{
-		for(i = 0; i < 3; i ++)
-		{
-			magSum[i] = magSum[i] - magFilter[i][magFilterCnt];
-			magFilter[i][magFilterCnt] = mag_raw_data[i];
-			magSum[i] += magFilter[i][magFilterCnt];
-			magData[i] = magSum[i] / magFilterNum;	
-		}
-	}
-	else
-	{
-		
-		for(i = 0; i < 3; i ++)
-		{
-			magFilter[i][magFilterCnt] = mag_raw_data[i];
-			magSum[i] += magFilter[i][magFilterCnt];
-			magData[i] = magSum[i]/(magFilterCnt + 1);
-		}
-		
-	}
-	
-	magFilterCnt ++;
-	
-}
-#define USART4_BUF_NUM 64
-unsigned char USART4_TX_BUF[USART4_BUF_NUM] = {0};
-sys_status_t local_data;
-void DT_SetMagData(void)
-{
-	unsigned char sum = 0;
-	unsigned char i;
-
-
-	USART4_TX_BUF[0] = 0xFA;
-	USART4_TX_BUF[1] = 0xAF;
-	USART4_TX_BUF[2] = 0x03;
-	USART4_TX_BUF[3] = 0x72;	
-	USART4_TX_BUF[5] = (unsigned char)(((int)Angle[2] & 0x0000FF00) >> 8);
-	USART4_TX_BUF[4] = (unsigned char)((int)Angle[2] & 0x000000FF);
-	for(i = 2; i < 6; i++)
-	{
-			sum += USART4_TX_BUF[i];
-	}	
-	USART4_TX_BUF[6] = sum;
-	local_data.flag_send_mag = 1;
-}
-void sensor_process(void)
-{
-	if(flag_cali_mag != 1)
-	{
-		Angle[2] = xbm_atan2(magData[2],magData[0]) * XBM_R2D;
-	}
-	//SendData( (Angle[2] + 180 )/2);
-	//USART_SendData(UART4, (unsigned char)((Angle[2] + 180)/2));
-	DT_SetMagData();
-}
-
-
-void sensorCalibrate(void)
-{
-
-	int i ;
-	
-	if(local_data.flag_mag_cali == 1)
-	{
-
-		if(magMax[0] < mpu_data_orign.mag_x)
-		{
-			magMax[0] = mpu_data_orign.mag_x;
-		}
-		
-		if(magMax[1] < mpu_data_orign.mag_y)
-		{
-			magMax[1] = mpu_data_orign.mag_y;
-		}
-		
-		if(magMax[2] < mpu_data_orign.mag_z)
-		{
-			magMax[2] = mpu_data_orign.mag_z;
-		}
-		
-		if(magMin[0] > mpu_data_orign.mag_x)
-		{
-			magMin[0] = mpu_data_orign.mag_x;
-		}
-		
-		if(magMin[1] > mpu_data_orign.mag_y)
-		{
-			magMin[1] = mpu_data_orign.mag_y;
-		}
-		
-		if(magMin[2] > mpu_data_orign.mag_z)
-		{
-			magMin[2] = mpu_data_orign.mag_z;
-		}
-		magCaliNum ++ ;
-		if(magCaliNum >= MAG_ADJ_MAX)
-		{
-			magCaliNum = 0;
-			local_data.flag_mag_cali = 0;
-			
-			 
-			for(i = 0; i < 3; i ++)
-			{
-				mag_param[i][0] = (magMax[i] + magMin[i])/2;
-				mag_param[i][1] = 2/(magMax[i] - magMin[i]);
-			}
-			
-			//data_save();
-
-		}
-		
-		 
-		
-	}
-	else
-	{
-		
-	}
-	
-}
-
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-//                                IIC Interface                               //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
-
-unsigned char ack;
-
-void MPU9250_iic_init(void)
-{
-	// SCL	PB6
-	GPIO_InitTypeDef GPIO_InitStructure;
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE); 
-	//PG11 ??,??IIC?SCL;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10; 
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 
-	GPIO_Init(GPIOB,&GPIO_InitStructure);
-	//PG12 ??,??IIC?SDA;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;  
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;; 
-	GPIO_Init(GPIOB,&GPIO_InitStructure);	 
-	
-}
-
-
-void iic_delay(void)
-{
-	//delay_us(2);
-	int i;
-	for (i = 0; i < 40; i++)
-	{
-		;
-	}
-
-}
-/**************************************
-起始信号
-**************************************/
-void iic_start(void)
-{
-    SDA_HIGH ;
-    SCL_HIGH ;      //?????
-    iic_delay() ;    //??
-    SDA_LOW ;       //?????
-    iic_delay() ;    //??
-    SCL_LOW ;       //?????
-}
-/**************************************
-停止信号
-**************************************/
-void iic_stop(void)
-{
-    SDA_LOW ;
-    SCL_HIGH ;
-    iic_delay() ;
-    SDA_HIGH ; 
-    iic_delay() ; 
-}
-/**************************************
-发送应答信号
-入口参数:ack (0:ACK 1:NAK)
-**************************************/
-void iic_send_ack(unsigned char ack)
-{
-    if(ack)
+    u8 res=0;
+    IIC_Init();     //初始化IIC总线
+    MPU_Write_Byte(MPU9250_ADDR,MPU_PWR_MGMT1_REG,0X80);//复位MPU9250
+    Delay_ms(100);  //延时100ms
+    MPU_Write_Byte(MPU9250_ADDR,MPU_PWR_MGMT1_REG,0X00);//唤醒MPU9250
+    MPU_Set_Gyro_Fsr(3);					        	//陀螺仪传感器,±2000dps
+	  MPU_Set_Accel_Fsr(0);					       	 	//加速度传感器,±2g
+    MPU_Set_Rate(50);						       	 	//设置采样率50Hz
+    MPU_Write_Byte(MPU9250_ADDR,MPU_INT_EN_REG,0X00);   //关闭所有中断
+	  MPU_Write_Byte(MPU9250_ADDR,MPU_USER_CTRL_REG,0X00);//I2C主模式关闭
+	  MPU_Write_Byte(MPU9250_ADDR,MPU_FIFO_EN_REG,0X00);	//关闭FIFO
+	  MPU_Write_Byte(MPU9250_ADDR,MPU_INTBP_CFG_REG,0X82);//INT引脚低电平有效，开启bypass模式，可以直接读取磁力计
+    res=MPU_Read_Byte(MPU9250_ADDR,MPU_DEVICE_ID_REG);  //读取MPU6500的ID
+    if(res==MPU6500_ID) //器件ID正确
     {
-        SDA_HIGH ;
+        MPU_Write_Byte(MPU9250_ADDR,MPU_PWR_MGMT1_REG,0X01);  	//设置CLKSEL,PLL X轴为参考
+        MPU_Write_Byte(MPU9250_ADDR,MPU_PWR_MGMT2_REG,0X00);  	//加速度与陀螺仪都工作
+		    MPU_Set_Rate(50);						       	//设置采样率为50Hz   
+    }else return 1;
+ 
+    res=MPU_Read_Byte(AK8963_ADDR,MAG_WIA);    			//读取AK8963 ID   
+    if(res==AK8963_ID)
+    {
+        MPU_Write_Byte(AK8963_ADDR,MAG_CNTL1,0X11);		//设置AK8963为单次测量模式
+    }else return 1;
+
+    return 0;
+}
+
+//设置MPU9250陀螺仪传感器满量程范围
+//fsr:0,±250dps;1,±500dps;2,±1000dps;3,±2000dps
+//返回值:0,设置成功
+//    其他,设置失败 
+u8 MPU_Set_Gyro_Fsr(u8 fsr)
+{
+	return MPU_Write_Byte(MPU9250_ADDR,MPU_GYRO_CFG_REG,fsr<<3);//设置陀螺仪满量程范围  
+}
+//设置MPU9250加速度传感器满量程范围
+//fsr:0,±2g;1,±4g;2,±8g;3,±16g
+//返回值:0,设置成功
+//    其他,设置失败 
+u8 MPU_Set_Accel_Fsr(u8 fsr)
+{
+	return MPU_Write_Byte(MPU9250_ADDR,MPU_ACCEL_CFG_REG,fsr<<3);//设置加速度传感器满量程范围  
+}
+
+//设置MPU9250的数字低通滤波器
+//lpf:数字低通滤波频率(Hz)
+//返回值:0,设置成功
+//    其他,设置失败 
+u8 MPU_Set_LPF(u16 lpf)
+{
+	u8 data=0;
+	if(lpf>=188)data=1;
+	else if(lpf>=98)data=2;
+	else if(lpf>=42)data=3;
+	else if(lpf>=20)data=4;
+	else if(lpf>=10)data=5;
+	else data=6; 
+	return MPU_Write_Byte(MPU9250_ADDR,MPU_CFG_REG,data);//设置数字低通滤波器  
+}
+
+//设置MPU9250的采样率(假定Fs=1KHz)
+//rate:4~1000(Hz)
+//返回值:0,设置成功
+//    其他,设置失败 
+u8 MPU_Set_Rate(u16 rate)
+{
+	u8 data;
+	if(rate>1000)rate=1000;
+	if(rate<4)rate=4;
+	data=1000/rate-1;
+	data=MPU_Write_Byte(MPU9250_ADDR,MPU_SAMPLE_RATE_REG,data);	//设置数字低通滤波器
+ 	return MPU_Set_LPF(rate/2);	//自动设置LPF为采样率的一半
+}
+
+//得到温度值
+//返回值:温度值(扩大了100倍)
+short MPU_Get_Temperature(void)
+{
+    u8 buf[2]; 
+    short raw;
+	float temp;
+	MPU_Read_Len(MPU9250_ADDR,MPU_TEMP_OUTH_REG,2,buf); 
+    raw=((u16)buf[0]<<8)|buf[1];  
+    temp=21+((double)raw)/333.87;  
+    return temp*100;;
+}
+//得到陀螺仪值(原始值)
+//gx,gy,gz:陀螺仪x,y,z轴的原始读数(带符号)
+//返回值:0,成功
+//    其他,错误代码
+u8 MPU_Get_Gyroscope(short *gx,short *gy,short *gz)
+{
+    u8 buf[6],res; 
+	res=MPU_Read_Len(MPU9250_ADDR,MPU_GYRO_XOUTH_REG,6,buf);
+	if(res==0)
+	{
+		*gx=((u16)buf[0]<<8)|buf[1];  
+		*gy=((u16)buf[2]<<8)|buf[3];  
+		*gz=((u16)buf[4]<<8)|buf[5];
+	} 	
+    return res;;
+}
+//得到加速度值(原始值)
+//gx,gy,gz:陀螺仪x,y,z轴的原始读数(带符号)
+//返回值:0,成功
+//    其他,错误代码
+u8 MPU_Get_Accelerometer(short *ax,short *ay,short *az)
+{
+    u8 buf[6],res;  
+	res=MPU_Read_Len(MPU9250_ADDR,MPU_ACCEL_XOUTH_REG,6,buf);
+	if(res==0)
+	{
+		*ax=((u16)buf[0]<<8)|buf[1];  
+		*ay=((u16)buf[2]<<8)|buf[3];  
+		*az=((u16)buf[4]<<8)|buf[5];
+	} 	
+    return res;;
+}
+
+//得到磁力计值(原始值)
+//mx,my,mz:磁力计x,y,z轴的原始读数(带符号)
+//返回值:0,成功
+//    其他,错误代码
+u8 MPU_Get_Magnetometer(short *mx,short *my,short *mz)
+{
+    u8 buf[6],res;  
+	res=MPU_Read_Len(AK8963_ADDR,MAG_XOUT_L,6,buf);
+	if(res==0)
+	{
+		*mx=((u16)buf[1]<<8)|buf[0];  
+		*my=((u16)buf[3]<<8)|buf[2];  
+		*mz=((u16)buf[5]<<8)|buf[4];
+	} 	
+    MPU_Write_Byte(AK8963_ADDR,MAG_CNTL1,0X11); //AK8963每次读完以后都需要重新设置为单次测量模式
+    return res;;
+}
+
+//IIC连续写
+//addr:器件地址 
+//reg:寄存器地址
+//len:写入长度
+//buf:数据区
+//返回值:0,正常
+//    其他,错误代码
+u8 MPU_Write_Len(u8 addr,u8 reg,u8 len,u8 *buf)
+{
+    u8 i;
+    IIC_Start();
+    IIC_Send_Byte((addr<<1)|0); //发送器件地址+写命令
+    if(IIC_Wait_Ack())          //等待应答
+    {
+        IIC_Stop();
+        return 1;
     }
-    else
+    IIC_Send_Byte(reg);         //写寄存器地址
+    IIC_Wait_Ack();             //等待应答
+    for(i=0;i<len;i++)
     {
-        SDA_LOW ;
-    }           
-    SCL_HIGH ;       
-    iic_delay() ;   
-    SCL_LOW ;          
-    iic_delay() ;   
-}
-/**************************************
-接收应答信号
-0为应答 1为应答失败
-**************************************/
-unsigned char iic_recv_ack(void)
-{
-    SDA_IN ;
-    SCL_HIGH ;                     
-    iic_delay() ;                 
-    if(READ_SDA)  
-    {
-       ack = 1;
-    }
-    else
-    {
-        ack = 0;
-    }
-    SCL_LOW ;                       //?????
-    SDA_OUT ;                       //??SDA???
-    iic_delay() ;                    //??
-    return ack ;
-
-}
-/**************************************
-向IIC总线发送一个字节数据
-**************************************/
-void iic_send_byte(unsigned char dat)
-{
-    unsigned char i;
-    for(i = 0; i < 8; i++)
-    {
-        if((dat << i) & 0x80)   //????
-        {    
-			SDA_HIGH ;          //??SDA??
+        IIC_Send_Byte(buf[i]);  //发送数据
+        if(IIC_Wait_Ack())      //等待ACK
+        {
+            IIC_Stop();
+            return 1;
         }
-		else
-		{
-		    SDA_LOW ;
-        }
-		iic_delay() ;            //??
-        SCL_HIGH ;              //?????
-        iic_delay() ;            //??
-        SCL_LOW ;               //?????
     }
-    iic_recv_ack();
-}
-/**************************************
-从IIC总线接收一个字节数据
-**************************************/
-unsigned char iic_recv_byte(void)
-{
-    unsigned char i,dat;
-    SDA_HIGH ;                  //??????,??????
-    iic_delay() ;                //??
-    SDA_IN ;                    //??SDA???
-    iic_delay() ;                //??
-    for(i = 0; i < 8; i++)
+    IIC_Stop();
+    return 0;
+} 
+
+//IIC连续读
+//addr:器件地址
+//reg:要读取的寄存器地址
+//len:要读取的长度
+//buf:读取到的数据存储区
+//返回值:0,正常
+//    其他,错误代码
+u8 MPU_Read_Len(u8 addr,u8 reg,u8 len,u8 *buf)
+{ 
+    IIC_Start();
+    IIC_Send_Byte((addr<<1)|0); //发送器件地址+写命令
+    if(IIC_Wait_Ack())          //等待应答
     {
-        dat <<= 1;              //????
-        SCL_HIGH ;              //?????
-        iic_delay() ;            //??
-        if(READ_SDA)   			//??SDA????
-            dat ++ ;
-        SCL_LOW ;               //?????
-        iic_delay() ;            //??
+        IIC_Stop();
+        return 1;
     }
-    SDA_OUT ;                   //??SDA???
-    return dat ;
-}
-/**************************************
-I2C 接收数据
-参数:	dev 器件地址, 
-		reg 寄存器地址,
-		length 接收字节长度, 
-		data 数据地址
-返回值: 0 if sucess
-**************************************/
-unsigned char iic_read(unsigned char dev,
-               unsigned char reg,
-               unsigned char length,
-               unsigned char * data)
-{
-    unsigned char i ;
-    iic_start() ;
-    iic_send_byte(dev) ;
-    iic_send_byte(reg) ;
-    iic_start() ;
-    iic_send_byte(dev + 1) ;
-    for(i = 0; i < length; i ++)
+    IIC_Send_Byte(reg);         //写寄存器地址
+    IIC_Wait_Ack();             //等待应答
+	IIC_Start();                
+    IIC_Send_Byte((addr<<1)|1); //发送器件地址+读命令
+    IIC_Wait_Ack();             //等待应答
+    while(len)
     {
-        data[i] = iic_recv_byte() ;
-        if(i == length-1)
-            iic_send_ack(_NACK) ;
-        else
-            iic_send_ack(_ACK) ;
+        if(len==1)*buf=IIC_Read_Byte(0);//读数据,发送nACK 
+		else *buf=IIC_Read_Byte(1);		//读数据,发送ACK  
+		len--;
+		buf++;  
     }
-    iic_stop() ;
-    return 0 ;
+    IIC_Stop();                 //产生一个停止条件
+    return 0;       
 }
 
-/**************************************
-I2C 发送数据
-参数:	dev 器件地址, 
-		reg 寄存器地址,
-		len 数据长度
-		dat数据指针
-返回值: 0 if sucess
-**************************************/
-unsigned char iic_write(unsigned char dev,
-                        unsigned char reg,
-                        unsigned char len,
-                        unsigned char * dat)
+//IIC写一个字节 
+//devaddr:器件IIC地址
+//reg:寄存器地址
+//data:数据
+//返回值:0,正常
+//    其他,错误代码
+u8 MPU_Write_Byte(u8 addr,u8 reg,u8 data)
 {
-    unsigned char i ;
-    iic_start() ;
-    iic_send_byte(dev) ;
-    iic_send_byte(reg) ;
-    for(i = 0; i < len; i ++)
+    IIC_Start();
+    IIC_Send_Byte((addr<<1)|0); //发送器件地址+写命令
+    if(IIC_Wait_Ack())          //等待应答
     {
-        iic_send_byte(dat[i]) ;
+        IIC_Stop();
+        return 1;
     }
-    iic_stop() ;
-    return 0 ;
+    IIC_Send_Byte(reg);         //写寄存器地址
+    IIC_Wait_Ack();             //等待应答
+    IIC_Send_Byte(data);        //发送数据
+    if(IIC_Wait_Ack())          //等待ACK
+    {
+        IIC_Stop();
+        return 1;
+    }
+    IIC_Stop();
+    return 0;
 }
 
-void IIC_SCL_OUT(void)
+//IIC读一个字节 
+//reg:寄存器地址 
+//返回值:读到的数据
+u8 MPU_Read_Byte(u8 addr,u8 reg)
 {
-	GPIO_InitTypeDef GPIO_InitStructure;
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE); 
-	//PG11 输出，作为IIC的SCL;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11; 
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 
-	GPIO_Init(GPIOB,&GPIO_InitStructure);
+    u8 res;
+    IIC_Start();
+    IIC_Send_Byte((addr<<1)|0); //发送器件地址+写命令
+    IIC_Wait_Ack();             //等待应答
+    IIC_Send_Byte(reg);         //写寄存器地址
+    IIC_Wait_Ack();             //等待应答
+	  IIC_Start();                
+    IIC_Send_Byte((addr<<1)|1); //发送器件地址+读命令
+    IIC_Wait_Ack();             //等待应答
+    res=IIC_Read_Byte(0);		//读数据,发送nACK  
+    IIC_Stop();                 //产生一个停止条件
+    return res;  
 }
-void IIC_SDA_IN(void)
-{
-	GPIO_InitTypeDef GPIO_InitStructure;
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE); 
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;  
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-	GPIO_Init(GPIOB,&GPIO_InitStructure);
-}
-
-
-float xbm_atan(float x)
-{
-	float y;
-	int invFlag = 0;
-	if(x < 0.0f)
-	{
-		x = -x;
-		invFlag = 1;
-	}
-	if(x < 1.0f)
-	{
-		y = (((-0.03825f*x*x + 0.14498f)*x*x - 0.32053f)*x*x + 0.99913f)*x;
-	}else if(x < 3.0f)
-	{
-		y= ((0.03214001f*x - 0.28140609f)*x + 0.93934992f)*x + 0.09782516f;
-	}else if(x < 20.0f)
-	{
-		y = ((((( -0.000000121964262f*x + 0.000009637007236f)*x - 0.000312307892459f)*x + 0.005353125313825f)*x
-			-0.052153209590924f)*x + 0.287835099268528f)*x + 0.735982162169589f;
-	}else if(x < 100.0f)
-	{
-		y = ((((( -0.000000000000992f*x + 0.000000000409265f)*x - 0.000000069742821f)*x + 0.000006342069404f)*x
-			-0.000331071339679f)*x + 0.009885048057013f)*x + 1.414935610187774f;
-	}else
-	{
-		y = 1.4915;
-	}
-	if(invFlag == 1)
-	{
-		return -y;
-	}else
-	{
-		return y;
-	}
-}
-
-
-
-float xbm_atan2(float x, float y)
-{
-  float temp = y/x;
-  //??
-  temp = xbm_atan(temp);
-  //????
-  if( (x < 0) && (y > 0) )
-  {
-    temp += PI;
-  }else if( (x<0) && (y<0) )
-  {
-    temp += -PI;
-  }
-  return temp;  
-}
-

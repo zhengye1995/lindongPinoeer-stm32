@@ -198,12 +198,22 @@ static void BSP_timerInit(void)
   //TIM3  用于10MS中断定时
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBaseStructure.TIM_Prescaler = 36 - 1;
+  TIM_TimeBaseStructure.TIM_Prescaler = 72 - 1;
   TIM_TimeBaseStructure.TIM_Period = 10000 - 1;
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
   TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
   TIM_Cmd(TIM3, ENABLE);
+	
+	 //TIM4  用于10mS中断定时 MPU9250
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseStructure.TIM_Prescaler = 72 - 1;
+  TIM_TimeBaseStructure.TIM_Period = 10000 - 1;
+  TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+  TIM_ITConfig(TIM4, TIM_IT_Update, ENABLE);
+  TIM_Cmd(TIM4, ENABLE);
 	
 	//TIM1 TIM8 Encoder
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
@@ -284,8 +294,9 @@ static void BSP_nvicInit(void)
   // 中断方案选择
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
   // 中断初始化
-  fun_nvicSetNormal(TIM3_IRQn, 1, 1);
-  fun_nvicSetNormal(UART4_IRQn, 0, 1);
+  fun_nvicSetNormal(TIM3_IRQn, 0, 1);
+	fun_nvicSetNormal(TIM4_IRQn, 1, 2);
+  //fun_nvicSetNormal(UART4_IRQn, 0, 1);
 }
 
 /********************************************************************************************************

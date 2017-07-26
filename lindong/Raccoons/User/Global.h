@@ -24,6 +24,9 @@
 *********************************************************************************************************
 */
 #include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 #include "stm32f10x.h"
 
 /*
@@ -46,6 +49,7 @@
 #include "stm32f10x_it.h"
 #include "function.h"
 #include "main.h"
+#include "trifunction.h"
 
 /* Drivers */
 #include "Bsp.h"
@@ -53,8 +57,8 @@
 #include "Motor.h"
 #include "pid.h"
 #include "mpu9250.h"
-
-
+#include "mpuiic.h"
+#include "inv_mpu.h"
 #endif
 //===========================================  End Of File  ===========================================//
 

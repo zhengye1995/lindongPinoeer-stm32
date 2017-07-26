@@ -169,16 +169,30 @@ void TIM3_IRQHandler(void)//左右轮与实际相反// 中断频率1000Hz
 		num++;
 		Speed_L_Get = GetEncoder2_Pulse();
 		Speed_R_Get = GetEncoder1_Pulse();
-//		L_Sum_Step += ((float)Speed_L_Get/1433.3);
-//				
-//		R_Sum_Step += ((float)Speed_R_Get/1433.3);
-//			
+		//L_Sum_Step += ((float)Speed_L_Get);				
+		//R_Sum_Step += ((float)Speed_R_Get);		
 //		Sum_Step = R_Sum_Step + L_Sum_Step;
-//		if(num==5)//5ms
-//		{
-//			num=0;  
-//			Robot_Loaction((Speed_L_Get+Speed_R_Get)/2.0/1433.3, (Speed_R_Get-Speed_L_Get)/40.0/1433.3);
-//		}
+		//if(num==5)//500ms
+		//{
+		//	num=0;  
+//			if(MPU_RecvFin)
+//			{
+//				MPU_RecvFin = 0;
+//				//Robot_Loaction((Speed_L_Get+Speed_R_Get)/2.0/Km, yaw);
+//			}
+		//}
+	 } 
+}
+void TIM4_IRQHandler(void)
+{
+  if(TIM_GetITStatus(TIM4, TIM_IT_Update) == SET)
+  {
+    TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
+		if(MPU_RecvFin)
+			{
+				MPU_RecvFin = 0;
+				Robot_Loaction((Speed_L_Get+Speed_R_Get)/2.0/Km, yaw-yawG);
+			}
 	 } 
 }
 

@@ -363,7 +363,7 @@
             <wLevel>2</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
-            <uC99>0</uC99>
+            <uC99>1</uC99>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -371,9 +371,9 @@
             <vShortWch>0</vShortWch>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>USE_STDPERIPH_DRIVER,STM32F10X_HD</Define>
+              <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER,MPU9250,EMPL_TARGET_STM32F4,EMPL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CMSIS;..\App;..\Drivers;..\Libraries\inc;..\User</IncludePath>
+              <IncludePath>..\CMSIS;..\App;..\Drivers;..\Libraries\inc;..\User;..\Drivers\DMP\driver\eMPL;..\Drivers\DMP\driver\include;..\Drivers\DMP\driver\stm32L;..\Drivers\DMP\mllite;..\Drivers\DMP\eMPL-hal;..\Drivers\DMP\mpl</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -427,11 +427,6 @@
               <FilePath>..\CMSIS\core_cm3.h</FilePath>
             </File>
             <File>
-              <FileName>startup_stm32f10x_md.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\CMSIS\startup_stm32f10x_md.s</FilePath>
-            </File>
-            <File>
               <FileName>stm32f10x.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\CMSIS\stm32f10x.h</FilePath>
@@ -445,6 +440,11 @@
               <FileName>system_stm32f10x.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\CMSIS\system_stm32f10x.h</FilePath>
+            </File>
+            <File>
+              <FileName>startup_stm32f10x_hd.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\CMSIS\startup_stm32f10x_hd.s</FilePath>
             </File>
           </Files>
         </Group>
@@ -465,24 +465,29 @@
               <FilePath>..\Drivers\Motor.c</FilePath>
             </File>
             <File>
-              <FileName>mpu9250.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\mpu9250.c</FilePath>
-            </File>
-            <File>
               <FileName>Pid.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Drivers\Pid.c</FilePath>
             </File>
             <File>
-              <FileName>Bsp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\Bsp.c</FilePath>
-            </File>
-            <File>
               <FileName>function.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Drivers\function.c</FilePath>
+            </File>
+            <File>
+              <FileName>mpu9250.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\mpu9250.c</FilePath>
+            </File>
+            <File>
+              <FileName>mpuiic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\mpuiic.c</FilePath>
+            </File>
+            <File>
+              <FileName>trifunction.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\trifunction.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -560,6 +565,11 @@
           <GroupName>User</GroupName>
           <Files>
             <File>
+              <FileName>Bsp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\Bsp.c</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\main.c</FilePath>
@@ -578,6 +588,81 @@
               <FileName>stm32f10x_it.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\stm32f10x_it.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>MPL</GroupName>
+          <Files>
+            <File>
+              <FileName>eMPL_outputs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\DMP\eMPL-hal\eMPL_outputs.c</FilePath>
+            </File>
+            <File>
+              <FileName>data_builder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\DMP\mllite\data_builder.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_outputs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\DMP\mllite\hal_outputs.c</FilePath>
+            </File>
+            <File>
+              <FileName>message_layer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\DMP\mllite\message_layer.c</FilePath>
+            </File>
+            <File>
+              <FileName>ml_math_func.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\DMP\mllite\ml_math_func.c</FilePath>
+            </File>
+            <File>
+              <FileName>mlmath.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\DMP\mllite\mlmath.c</FilePath>
+            </File>
+            <File>
+              <FileName>mpl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\DMP\mllite\mpl.c</FilePath>
+            </File>
+            <File>
+              <FileName>results_holder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\DMP\mllite\results_holder.c</FilePath>
+            </File>
+            <File>
+              <FileName>start_manager.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\DMP\mllite\start_manager.c</FilePath>
+            </File>
+            <File>
+              <FileName>storage_manager.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\DMP\mllite\storage_manager.c</FilePath>
+            </File>
+            <File>
+              <FileName>libmpllib.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\Drivers\DMP\mpl\libmpllib.lib</FilePath>
+            </File>
+            <File>
+              <FileName>inv_mpu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\DMP\driver\eMPL\inv_mpu.c</FilePath>
+            </File>
+            <File>
+              <FileName>inv_mpu_dmp_motion_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\DMP\driver\eMPL\inv_mpu_dmp_motion_driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>log_stm32.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\DMP\driver\stm32L\log_stm32.c</FilePath>
             </File>
           </Files>
         </Group>

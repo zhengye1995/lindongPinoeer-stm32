@@ -54,25 +54,21 @@ typedef struct BSP_DATA
 #define MEM_ADDR(addr)  *((volatile unsigned long  *)(addr)) 
 #define BIT_ADDR(addr, bitnum)   MEM_ADDR(BITBAND(addr, bitnum)) 
 //IO地址映射
-#define GPIOA_ODR_Addr    (GPIOA_BASE+20)  
-#define GPIOB_ODR_Addr    (GPIOB_BASE+20) 
-#define GPIOC_ODR_Addr    (GPIOC_BASE+20)  
-#define GPIOD_ODR_Addr    (GPIOD_BASE+20) 
-#define GPIOE_ODR_Addr    (GPIOE_BASE+20)  
-#define GPIOF_ODR_Addr    (GPIOF_BASE+20)   
-#define GPIOG_ODR_Addr    (GPIOG_BASE+20)
-#define GPIOH_ODR_Addr    (GPIOH_BASE+20) 
-#define GPIOI_ODR_Addr    (GPIOI_BASE+20) 
+#define GPIOA_ODR_Addr    (GPIOA_BASE+12) //0x4001080C 
+#define GPIOB_ODR_Addr    (GPIOB_BASE+12) //0x40010C0C 
+#define GPIOC_ODR_Addr    (GPIOC_BASE+12) //0x4001100C 
+#define GPIOD_ODR_Addr    (GPIOD_BASE+12) //0x4001140C 
+#define GPIOE_ODR_Addr    (GPIOE_BASE+12) //0x4001180C 
+#define GPIOF_ODR_Addr    (GPIOF_BASE+12) //0x40011A0C    
+#define GPIOG_ODR_Addr    (GPIOG_BASE+12) //0x40011E0C    
 
-#define GPIOA_IDR_Addr    (GPIOA_BASE+16) 
-#define GPIOB_IDR_Addr    (GPIOB_BASE+16) 
-#define GPIOC_IDR_Addr    (GPIOC_BASE+16) 
-#define GPIOD_IDR_Addr    (GPIOD_BASE+16) 
-#define GPIOE_IDR_Addr    (GPIOE_BASE+16)  
-#define GPIOF_IDR_Addr    (GPIOF_BASE+16)  
-#define GPIOG_IDR_Addr    (GPIOG_BASE+16)
-#define GPIOH_IDR_Addr    (GPIOH_BASE+16) 
-#define GPIOI_IDR_Addr    (GPIOI_BASE+16)  
+#define GPIOA_IDR_Addr    (GPIOA_BASE+8) //0x40010808 
+#define GPIOB_IDR_Addr    (GPIOB_BASE+8) //0x40010C08 
+#define GPIOC_IDR_Addr    (GPIOC_BASE+8) //0x40011008 
+#define GPIOD_IDR_Addr    (GPIOD_BASE+8) //0x40011408 
+#define GPIOE_IDR_Addr    (GPIOE_BASE+8) //0x40011808 
+#define GPIOF_IDR_Addr    (GPIOF_BASE+8) //0x40011A08 
+#define GPIOG_IDR_Addr    (GPIOG_BASE+8) //0x40011E08   
 //IO操作，只操作一个位
 #define PAout(n)   BIT_ADDR(GPIOA_ODR_Addr,n)  
 #define PAin(n)    BIT_ADDR(GPIOA_IDR_Addr,n)  

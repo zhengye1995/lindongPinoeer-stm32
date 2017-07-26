@@ -122,21 +122,26 @@ Revision     :
 ********************************************************************************************************/
 void Robot_Loaction(float speed, float Angular_velocity)
 {
-  float t=5;//5ms
-	if(ABS(Speed_R_Get-Speed_L_Get)>=3)
-	{
-		rl.angle += Angular_velocity*5*180/PI;
-	}
-	 if(rl.angle>=360)
-	 {
-		 rl.angle -= 360;
-	 }
-	 if(rl.angle<=-360)
-	 {
-		 rl.angle += 360;
-	 }
-   rl.x += speed * t * cos(rl.angle);
-   rl.y += speed * t * sin(rl.angle); 
+		float t=1;//10ms
+	//	if(ABS(Speed_R_Get-Speed_L_Get)<=2)
+	//	{
+	//		rl.angle += Angular_velocity*5*180/PI;
+	//	}
+	//	 if(rl.angle>=360)
+	//	 {
+	//		 rl.angle -= 360;
+	//	 }
+	//	 if(rl.angle<=-360)
+	//	 {
+	//		 rl.angle += 360;
+	//	 }
+		 rl.last_angle = rl.angle;
+		 rl.angle = -Angular_velocity;
+		 rl.x += speed * t * MyCos(rl.angle*10);
+		 rl.y += speed * t * MySin(rl.angle*10); 
+		 rl.w = rl.angle / 180 * PI;
+		 rl.linerX = speed * 100;
+		 rl.angularZ = (rl.angle - rl.last_angle) / 180 * PI / t * 100;
 }
 
 

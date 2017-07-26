@@ -45,8 +45,12 @@
 typedef struct Robot_Location			//定义数法核心数据
 {
    float angle;
+	 float last_angle;
 	 float x;
 	 float y;
+	 float w;//弧度
+	 float linerX;
+	 float angularZ;
 }Robot_Location;
 /* External Function */
 
