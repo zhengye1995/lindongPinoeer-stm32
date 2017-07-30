@@ -54,7 +54,7 @@ void SetMotor1PWM(s16 xpwm);
 void SetMotor2PWM(s16 xpwm);
 void Motor_CtrlLR(s32 RefL,s32 RefR);
 void Motor_CtrlLR2(s32 RefL,s32 RefR);
-void SpeedSeed(u8 speedLsend, u8 speedRsend);
+void SpeedSeed(float speedLsend, float speedRsend);
 #endif
 
 //===========================================  End Of File  ===========================================//

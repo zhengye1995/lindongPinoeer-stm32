@@ -166,7 +166,7 @@ void TIM3_IRQHandler(void)//左右轮与实际相反// 中断频率1000Hz
   if(TIM_GetITStatus(TIM3, TIM_IT_Update) == SET)
   {
     TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
-		num++;
+		//num++;
 		Speed_L_Get = GetEncoder2_Pulse();
 		Speed_R_Get = GetEncoder1_Pulse();
 //		L_Sum_Step += ((float)Speed_L_Get/1433.3);

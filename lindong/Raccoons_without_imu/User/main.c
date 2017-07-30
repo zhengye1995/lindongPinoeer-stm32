@@ -29,8 +29,8 @@
 s16 recvSpeed = 0;
 s16 recvAngle = 0;
 int UART4_RecvFin = 0;
-u8 speedLsend = 0;
-u8 speedRsend = 0;
+float speedLsend = 0;
+float speedRsend = 0;
 unsigned char UART4recdma[9]={0};
 
 /*----------------------------------------  F U N C T I O N S  ----------------------------------------*/

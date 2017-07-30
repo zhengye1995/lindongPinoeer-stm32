@@ -198,7 +198,7 @@ static void BSP_timerInit(void)
   //TIM3  用于10MS中断定时
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBaseStructure.TIM_Prescaler = 36 - 1;
+  TIM_TimeBaseStructure.TIM_Prescaler = 72 - 1;
   TIM_TimeBaseStructure.TIM_Period = 10000 - 1;
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);

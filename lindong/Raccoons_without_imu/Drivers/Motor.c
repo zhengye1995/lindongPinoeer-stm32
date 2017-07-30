@@ -120,27 +120,44 @@ Outputs      : None
 Notes        : 
 Revision     :
 ********************************************************************************************************/
-void SpeedSeed(u8 speedLsend, u8 speedRsend)
+/********************************************************************************************************
+Function Name: SpeedSeed
+Description  : 发送速度，包头0xAA，包尾0x55
+Inputs       : speedLsend speedRsend
+Outputs      : None
+Notes        : 
+Revision     :
+********************************************************************************************************/
+void SpeedSeed(float speedLsend, float speedRsend)
 {
-	USART_SendData(UART4, 0xAA);
-	while (USART_GetFlagStatus(UART4, USART_FLAG_TXE) == RESET)
+	u8 speedLsendflag = 0;
+	u8 speedRsendflag = 0;
+	speedLsend = (int)(speedLsend*100);
+	speedRsend = (int)(speedRsend*100);
+
+	if(speedLsend >= 0)
 	{
-		 ;
+		speedLsendflag = 0;
 	}
-	USART_SendData(UART4, speedLsend);
-	while (USART_GetFlagStatus(UART4, USART_FLAG_TXE) == RESET)
+	else
 	{
-		 ;
+		speedLsendflag = 1;
 	}
-	USART_SendData(UART4, speedRsend);
-	while (USART_GetFlagStatus(UART4, USART_FLAG_TXE) == RESET)
+	if(speedRsend >= 0)
 	{
-		 ;
+		speedRsendflag = 0;
 	}
-	USART_SendData(UART4, 0X55);
-	while (USART_GetFlagStatus(UART4, USART_FLAG_TXE) == RESET)
+	else
 	{
-		 ;
+		speedRsendflag = 1;
 	}
-}	
+	fun_usartSend(UART4, 0xAA);
+	fun_usartSend(UART4, speedLsendflag);
+	fun_usartSend(UART4, speedRsendflag);
+  fun_usartSend(UART4, ((int)ABS(speedLsend) & 0xff00)>>8);
+  fun_usartSend(UART4, ((int)ABS(speedLsend) & 0x00ff));
+	fun_usartSend(UART4, ((int)ABS(speedRsend) & 0xff00)>>8);
+  fun_usartSend(UART4, ((int)ABS(speedRsend) & 0x00ff));
+	fun_usartSend(UART4, 0x55);
+}
 //===========================================  End Of File  ===========================================//
