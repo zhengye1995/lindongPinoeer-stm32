@@ -1,0 +1,11 @@
+.\output\start_manager.o: ..\Drivers\DMP\mllite\start_manager.c
+.\output\start_manager.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\output\start_manager.o: ..\Drivers\DMP\driver\include\log.h
+.\output\start_manager.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\output\start_manager.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\output\start_manager.o: ..\Drivers\DMP\mllite\start_manager.h
+.\output\start_manager.o: ..\Drivers\DMP\driver\include\mltypes.h
+.\output\start_manager.o: ..\Drivers\DMP\driver\include\stdint_invensense.h
+.\output\start_manager.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\output\start_manager.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\errno.h
+.\output\start_manager.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h

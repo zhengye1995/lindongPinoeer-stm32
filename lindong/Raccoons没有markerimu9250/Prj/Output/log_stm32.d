@@ -1,0 +1,12 @@
+.\output\log_stm32.o: ..\Drivers\DMP\driver\stm32L\log_stm32.c
+.\output\log_stm32.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\output\log_stm32.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\output\log_stm32.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\output\log_stm32.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\output\log_stm32.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\output\log_stm32.o: ..\Drivers\DMP\driver\stm32L\packet.h
+.\output\log_stm32.o: ..\Drivers\DMP\driver\include\mltypes.h
+.\output\log_stm32.o: ..\Drivers\DMP\driver\include\stdint_invensense.h
+.\output\log_stm32.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\errno.h
+.\output\log_stm32.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h
+.\output\log_stm32.o: ..\Drivers\DMP\driver\include\log.h

@@ -1,0 +1,16 @@
+.\output\mpl.o: ..\Drivers\DMP\mllite\mpl.c
+.\output\mpl.o: ..\Drivers\DMP\mllite\storage_manager.h
+.\output\mpl.o: ..\Drivers\DMP\driver\include\mltypes.h
+.\output\mpl.o: ..\Drivers\DMP\driver\include\stdint_invensense.h
+.\output\mpl.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\output\mpl.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\output\mpl.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\errno.h
+.\output\mpl.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h
+.\output\mpl.o: ..\Drivers\DMP\driver\include\log.h
+.\output\mpl.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\output\mpl.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\output\mpl.o: ..\Drivers\DMP\mllite\mpl.h
+.\output\mpl.o: ..\Drivers\DMP\mllite\start_manager.h
+.\output\mpl.o: ..\Drivers\DMP\mllite\data_builder.h
+.\output\mpl.o: ..\Drivers\DMP\mllite\results_holder.h
+.\output\mpl.o: ..\Drivers\DMP\driver\include\mlinclude.h
